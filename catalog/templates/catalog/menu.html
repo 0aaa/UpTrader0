@@ -1,38 +1,63 @@
-{% if current_menu %}
-  <ul style="margin-top: 40px;">
-    {% for menu in parents %}
-      <li style="margin-bottom: 16px;">
-        <a href="{% url 'draw_menu' menu.name %}" style="padding: 6px; border: solid 1px black; border-radius: 4px">
-          {{ menu.name }}
-        </a>
+{% if content %}
+  <p>{{ content }}</p>
+  <h4>Selection: {{ content.current_menu }}</h4>
+  <ul style="display: inline-block">
+    {% for menu in content.parents %}
+      <li>
+        <table style="margin-bottom: 16px; border: solid 1px" rules="rows">          
+          <tbody>
+            {% for parent in menu %}
+              <tr>
+                <td style="padding: 4px 32px">
+                  <a href="{% url 'draw_menu' parent.name %}">
+                    {% if parent.name == content.current_menu %}
+                      <b>
+                        {{ parent.name | capfirst }}
+                      </b>
+                    {% else %}
+                      {{ parent.name | capfirst }}
+                    {% endif %}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </li>
     {% endfor %}
   </ul>
-  <h4 style="margin-left: 60px;">
-    <b>
-      {{ current_menu.name }}
-    </b>
-  </h4>
-  <ul style="margin-left: 60px;">
-    {% for menu in childs %}
-      <li style="margin-bottom: 16px;">
-        <a href="{% url 'draw_menu' menu.name %}" style="padding: 6px; border: solid 1px black; border-radius: 4px">
-          {{ menu.name }}
-        </a>
-      </li>
-      {% if loop.index == 0 %}
-        <ul style="margin-left: 30px;">
-          {% for gc in grandchilds %}
-            <li style="margin-bottom: 16px;">
-              <a href="{% url 'draw_menu' gc.name %}" style="padding: 6px; border: solid 1px black; border-radius: 4px">
-                {{ gc.name }}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endfor %}
-  </ul>
+  <table style="display: inline-block; border: solid 1px" rules="rows">
+    <tbody>
+      {% for child in content.childs %}
+        <tr>
+          <td style="padding: 4px 32px">
+            <a href="{% url 'draw_menu' child.name %}">
+              {% if forloop.first %}
+                <b>
+                  {{ child.name | capfirst }}
+                </b>
+              {% else %}
+                {{ child.name | capfirst }}
+              {% endif %}
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <table style="display: inline-block; border: solid 1px" rules="rows">
+    <tbody>
+      {% for gr_child in content.grand_childs %}
+        <tr>
+          <td style="padding: 4px 32px">
+            <a href="{% url 'draw_menu' gr_child.name %}">
+              {{ gr_child.name | capfirst }}
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% else %}
   <p>There are no menus in the database.</p>
 {% endif %}
